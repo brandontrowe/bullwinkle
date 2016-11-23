@@ -6,28 +6,23 @@ console.log(settings)
 function init() {
     gatherCreatures(function(creatures){
 
-        looseCreatures(creatures);
+        console.log(creatures[0].element)
+
     });
 }
 
-function gatherCreatures(cb) {
+function setStage(cb) {
     let creatures = []
     let i = 0
     let l = settings.creatureCount
 
     for( ; i < l; i += 1 ){
-        creatures.push(new Creature())
+        let creature = new Creature()
+        stage.innerHTML += creature.body;
+        create.setElement(stage.getElementById(creature.id)
+        creatures.push(creature)
     }
     cb(creatures)
-}
-
-function looseCreatures(creatures) {
-    let i = 0
-    let l = creatures.length
-    for ( ; i < l; i += 1 ) {
-        stage.innerHTML += creatures[i].body
-        console.log(creatures[i].body)
-    }
 }
 
 init();
