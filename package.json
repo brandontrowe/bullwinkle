@@ -1,0 +1,37 @@
+{
+  "name": "bullwinkle",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently -p \"[{name}]\" -n \"HTTP,JS,SCSS\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"npm run http-server\" \"npm run watch-js\" \"npm run watch-styles\"",
+    "http-server": "browser-sync start --server --files \"css/app.css, **/*.html, js/app.js\"",
+    "watch-js": "watchify ./js/lib/index.js -t [ babelify --presets [ es2015 ] ] -t envify --debug --verbose -o ./js/app.js",
+    "watch-styles": "npm run build-styles-dev && chokidar \"**/*.scss\" -c \"npm run build-styles-dev\"",
+    "build": "npm run build-js && npm run build-styles",
+    "build-js": "NODE_ENV=production browserify ./js/lib/index.js -t [ babelify --presets [ es2015 ] ] -t envify -o ./js/app.js && npm run minify-js",
+    "build-styles": "npm run build-scss && npm run postcss && npm run minify-css",
+    "build-styles-dev": "npm run build-scss && npm run postcss && echo \"Styles built!\"",
+    "build-scss": "node-sass -w ./css/scss/app.scss ./css/app.css",
+    "postcss": "postcss --use autoprefixer ./css/app.css -o ./css/app.css",
+    "minify-js": "uglifyjs ./js/app.js -o ./js/app.js",
+    "minify-css": "cleancss --skip-aggressive-merging --skip-restructuring ./css/app.css -o ./css/app.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^6.5.3",
+    "babel-preset-es2015": "^6.18.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.1",
+    "chokidar-cli": "^1.2.0",
+    "clean-css": "^3.4.21",
+    "concurrently": "^3.1.0",
+    "envify": "^3.4.1",
+    "node-sass": "^3.13.0",
+    "postcss-cli": "^2.6.0",
+    "uglifyjs": "^2.4.10",
+    "watchify": "^3.7.0"
+  }
+}
