@@ -4,9 +4,7 @@ const settings = require('./config.js')
 const getRandomInt = require('./utils.js').getRandomInt
 
 function init() {
-    setStage(function(){
-        initEventListeners()
-    })
+    setStage(function(){})
 }
 
 function setStage(cb) {
@@ -15,28 +13,21 @@ function setStage(cb) {
     let l = settings.creatureCount
 
     for( ; i < l; i += 1 ){
-        let creature = new Creature()
+        let monitor = document.querySelector('#monitor')
+        let creature = new Creature({
+            onClick: function(e, creature) {
+                monitor.innerHTML = '<ul>'
+                for(let prop in creature) {
+                    if( creature.hasOwnProperty( prop ) ) {
+                        monitor.innerHTML += '<li>creature.' + prop + ' = ' + creature[prop] + '</li>';
+                    }
+                }
+                monitor.innerHTML += '</ul>'
+            }
+        })
         creature.birth()
     }
     cb()
-}
-
-function initEventListeners() {
-    var creatureElems = document.getElementsByClassName('creature')
-    let i = 0
-    let l = creatureElems.length
-    for ( ; i < l; i += 1 ) {
-        creatureElems[i].addEventListener('click', function(e) {
-            e.preventDefault()
-            loadStats(this.getAttribute('id'))
-        })
-    }
-
-}
-
-function loadStats(creature_id) {
-    console.log();
-    document.getElementById('monitor')
 }
 
 init();

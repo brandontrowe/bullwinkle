@@ -10,10 +10,13 @@ body {
   background-color: #fff; }
 
 #monitor {
-  width: 200px;
+  width: 500px;
   min-height: 100px;
   margin: 30px auto 0;
-  background-color: #fff; }
+  background-color: #fff;
+  text-align: left;
+  line-height: 18px;
+  font-size: 13px; }
 
 .creature {
   position: absolute;

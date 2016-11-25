@@ -1,6 +1,6 @@
 module.exports = {
-    stage: document.getElementById('stage'),
-    creatureCount: 100,
+    stage: '#stage',
+    creatureCount: 50,
     stageWidth: 700,
     stageHeight: 600
 }
