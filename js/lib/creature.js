@@ -2,7 +2,7 @@ const getRandomInt = require('./utils.js').getRandomInt
 const boundary = require('./utils.js').boundary
 const settings = require('./config.js')
 const velocity = require('velocity-animate')
-const SAT = require('sat')
+const Matter = require('matter-js')
 
 var Creature = function(options) {
     const self = this;
