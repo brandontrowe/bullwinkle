@@ -4,6 +4,7 @@ const settings = require('./config.js')
 const Matter = require('matter-js')
 var Bodies = Matter.Bodies;
 var Body = Matter.Body;
+var Events = Matter.Events;
 
 
 var Creature = function(options) {
@@ -53,8 +54,8 @@ var Creature = function(options) {
             let x = self.location.x
             let y = self.location.y
 
-            x = boundary( x += getRandomInt(-4, 5), 'x' )
-            y = boundary( y += getRandomInt(-4, 5), 'y' )
+            x = boundary( x += getRandomInt(-4, 4), 'x' )
+            y = boundary( y += getRandomInt(-4, 4), 'y' )
             self.move(x, y)
         }
     }
@@ -89,7 +90,8 @@ var Creature = function(options) {
     }
     self.onClick = options.onClick || function(e) { console.log(e) }
     function initEvents() {
-        //self.body.addEventListener('click', function(e) {
+        // TODO: implement MouseContraint
+        //Events.on(self.body, 'click', function(e) {
         //    self.onClick(e, self)
         //})
     }
