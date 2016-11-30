@@ -1,14 +1,23 @@
 const getRandomInt = require('./utils.js').getRandomInt
 const boundary = require('./utils.js').boundary
 const settings = require('./config.js')
-const velocity = require('velocity-animate')
 const Matter = require('matter-js')
+var Bodies = Matter.Bodies;
+var Body = Matter.Body;
+
 
 var Creature = function(options) {
     const self = this;
     let lifeIntervalID;
     let decisionIntervalID;
+    let energyMax = getRandomInt(50, 200)
     if(options == undefined) options = {}
+
+    function init() {
+        initEvents()
+        lifeIntervalID = window.setInterval(self.lifeloop, 1000)
+        decisionIntervalID = window.setInterval(self.decisionloop, getRandomInt(200, 400))
+    }
     self.state = 'awake'
     self.age = options.age || getRandomInt(0, 40)
     self.lifespan = options.lifespan || getRandomInt(60, 100)
@@ -18,21 +27,16 @@ var Creature = function(options) {
         y: getRandomInt(0, settings.stageHeight)
     }
     self.energy = {
-        max: getRandomInt(50, 200),
+        max: energyMax,
         min: 20,
-        current: 50
+        current: getRandomInt(0, energyMax)
     }
     self.element = null
     self.id = options.id || 'creature_' + getRandomInt(1000, 9999)
 
     self.body = createBody()
     self.move = function(x, y) {
-        velocity(self.body,
-        {
-            left: x,
-            top: y
-        },
-        { duration: 199 });
+        Body.setVelocity(self.body, { x: getRandomInt(-1, 2), y: getRandomInt(-1, 2) }) // moves relative to current position
         self.energy.current -= 5
         self.location.x = x
         self.location.y = y
@@ -41,11 +45,9 @@ var Creature = function(options) {
         sleep: function() {
             self.state = 'asleep'
             self.energy.current += 15
-            document.querySelector('#' + self.id).innerHTML = 'Z'
         },
         wake: function() {
             self.state = 'awake'
-            document.querySelector('#' + self.id).innerHTML = 'O'
         },
         wander: function() {
             let x = self.location.x
@@ -58,23 +60,17 @@ var Creature = function(options) {
     }
     self.decisionloop = function() {
         // TODO: decision logic
-        if (self.energy.current <= self.energy.min) {
-            self.behavior.sleep()
-        } else if (self.state === 'asleep') {
-            if (self.energy.current < self.energy.max) {
-                self.behavior.sleep()
-            } else {
-                self.behavior.wake()
-            }
-        } else {
+        // if (self.energy.current <= self.energy.min) {
+        //     self.behavior.sleep()
+        // } else if (self.state === 'asleep') {
+        //     if (self.energy.current < self.energy.max) {
+        //         self.behavior.sleep()
+        //     } else {
+        //         self.behavior.wake()
+        //     }
+        // } else {
             self.behavior.wander()
-        }
-    }
-    self.birth = function() {
-        document.querySelector(settings.stage).appendChild(self.body)
-        initEvents()
-        lifeIntervalID = window.setInterval(self.lifeloop, 1000)
-        decisionIntervalID = window.setInterval(self.decisionloop, getRandomInt(200, 400))
+        // }
     }
     self.death = function() {
         window.clearInterval(lifeIntervalID)
@@ -84,28 +80,30 @@ var Creature = function(options) {
     self.lifeloop = function() {
         // life logic here
         // increment age
-        if(self.age >= self.lifespan) {
-            self.death()
-        } else {
-            self.age += 0.1
-
-        }
+        // if(self.age >= self.lifespan) {
+        //     self.death()
+        // } else {
+        //     self.age += 0.1
+        //
+        // }
     }
     self.onClick = options.onClick || function(e) { console.log(e) }
     function initEvents() {
-        self.body.addEventListener('click', function(e) {
-            self.onClick(e, self)
-        })
+        //self.body.addEventListener('click', function(e) {
+        //    self.onClick(e, self)
+        //})
     }
     function createBody() {
-        let body = document.createElement('div')
-        body.setAttribute('id', self.id)
-        body.setAttribute('class', 'creature')
-        body.setAttribute('style', 'left:' + self.location.x + 'px; top:' + self.location.y + 'px;')
-        body.innerHTML = 'O'
+        let randShape = Math.round(getRandomInt(0, 2))
+        let size = getRandomInt(1, 15)
+        switch (randShape) {
+            case 0: return Bodies.circle(self.location.x, self.location.y, size)
+            case 1: return Bodies.rectangle(self.location.x, self.location.y, size, size)
+        }
 
-        return body
     }
+
+    init()
 
 };
 

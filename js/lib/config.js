@@ -1,6 +1,6 @@
 module.exports = {
     stage: '#stage',
-    creatureCount: 50,
-    stageWidth: 700,
-    stageHeight: 600
+    creatureCount: 500,
+    stageWidth: 1000,
+    stageHeight: 800
 }
