@@ -127,7 +127,7 @@ const Creature = function(options) {
             friction: 0.05,
             frictionStatic: 0.1,
             render: { visible: true }
-        };
+        }
         //return Composites.softBody(250, 100, 5, 5, 0, 0, true, 18, particleOptions)
         switch (randShape) {
             case 0: return Bodies.circle(self.location.x, self.location.y, size)
