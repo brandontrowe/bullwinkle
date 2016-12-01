@@ -1,6 +1,8 @@
 module.exports = {
-    stage: '#stage',
-    creatureCount: 500,
-    stageWidth: 1000,
-    stageHeight: 800
+    stage: {
+        id: '#stage',
+        width: 1000,
+        height: 800
+    },
+    creatureCount: 1
 }
