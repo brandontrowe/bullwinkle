@@ -1,4 +1,4 @@
-const getRandomInt = require('./utils.js').getRandomInt
+const getRandom = require('./utils.js').getRandom
 const boundary = require('./utils.js').boundary
 const _defaults = require('lodash/fp/defaultsDeep')
 const config = require('./config.js')
@@ -6,35 +6,43 @@ const Matter = require('matter-js')
 const World = Matter.World
 const Bodies = Matter.Bodies
 const Body = Matter.Body
+window.Body = Body
 const Events = Matter.Events
 const Composites = Matter.Composites
+const MouseConstraint = Matter.MouseConstraint
 
 
 const Creature = function(options) {
     const self = this
 
-    let energyMax = getRandomInt(50, 200)
+    let energyMax = getRandom(50, 200)
     let lifeIntervalID
     let decisionIntervalID
 
     const defaults = {
         stage: null,
-        id: 'creature_' + getRandomInt(1000, 9999),
+        id: 'creature_' + getRandom(1000, 9999, true),
         state: 'awake',
-        age: getRandomInt(0, 40),
-        lifespan: getRandomInt(60, 100),
+        age: getRandom(0, 40),
+        lifespan: getRandom(60, 100),
         location: {
-            x: getRandomInt(0, config.stage.width),
-            y: getRandomInt(0, config.stage.height)
+            x: getRandom(0, config.stage.width),
+            y: getRandom(0, config.stage.height)
         },
-        strength: getRandomInt(0, 10),
+        strength: getRandom(0, 10),
+        speed: getRandom(0, 0, false),
         energy: {
             max: energyMax,
             min: 20,
-            current: getRandomInt(0, energyMax)
+            current: getRandom(0, energyMax)
+        },
+        vision: {
+            hasVision: true,
+            acuity: getRandom(0, 10)
         }
     }
     const settings = _defaults(defaults, options)
+    console.log('settings', settings)
 
     /* Properties */
     /* ---------- */
@@ -50,7 +58,9 @@ const Creature = function(options) {
     /* Methods */
     /* ------- */
     self.move = function(x, y) {
-        Body.setVelocity(self.body, { x: getRandomInt(-1, 2), y: getRandomInt(-1, 2) }) // moves relative to current position
+        Body.setVelocity(self.body, { x: getRandom(-settings.speed, settings.speed), y: getRandom(-settings.speed, settings.speed) }) // moves relative to current position
+        //self.body.angle = self.body.angularVelocity
+
         self.energy.current -= 5
         self.location.x = x
         self.location.y = y
@@ -67,8 +77,8 @@ const Creature = function(options) {
             let x = self.location.x
             let y = self.location.y
 
-            x = boundary( x += getRandomInt(-4, 4), 'x' )
-            y = boundary( y += getRandomInt(-4, 4), 'y' )
+            x = boundary( x += getRandom(-4, 4), 'x' )
+            y = boundary( y += getRandom(-4, 4), 'y' )
             self.move(x, y)
         }
     }
@@ -97,8 +107,7 @@ const Creature = function(options) {
         if(self.age >= self.lifespan) {
             self.death()
         } else {
-            self.age += 0.1
-
+            self.age += 0.01
         }
     }
 
@@ -108,32 +117,30 @@ const Creature = function(options) {
 
 
     function init() {
-        initEvents()
         lifeIntervalID = window.setInterval(self.lifeloop, 1000)
-        decisionIntervalID = window.setInterval(self.decisionloop, getRandomInt(200, 400))
+        decisionIntervalID = window.setInterval(self.decisionloop, getRandom(200, 400))
+
+        initEvents()
     }
 
     function initEvents() {
         // TODO: implement MouseContraint
-        //Events.on(self.body, 'click', function(e) {
-        //    self.onClick(e, self)
+
+        //Events.on(self.mouseConstraint, 'mousedown', function(e) {
+        //     console.log(e)
         //})
     }
 
     function createBody() {
-        let randShape = Math.round(getRandomInt(0, 2))
-        let size = getRandomInt(1, 15)
-        var particleOptions = {
-            friction: 0.05,
-            frictionStatic: 0.1,
-            render: { visible: true }
-        }
-        //return Composites.softBody(250, 100, 5, 5, 0, 0, true, 18, particleOptions)
-        switch (randShape) {
-            case 0: return Bodies.circle(self.location.x, self.location.y, size)
-            case 1: return Bodies.rectangle(self.location.x, self.location.y, size, size)
-        }
-
+        let size = 20//getRandom(5, 15)
+        // let parts = [
+            return Bodies.rectangle(200, 200, size, size, {angle: 0.01}) //self.location.x, self.location.y,
+        //     Bodies.polygon(self.location.x, self.location.y - size, 3, size - 4, {angle: -1})
+        // ]
+        //
+        // return Body.create({
+        //     parts: parts
+        // });
     }
 
     init()

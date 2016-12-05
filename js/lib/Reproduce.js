@@ -1,4 +1,4 @@
-const getRandomInt = require('./utils.js').getRandomInt
+const getRandom = require('./utils.js').getRandom
 const settings = require('./config.js')
 
 /**

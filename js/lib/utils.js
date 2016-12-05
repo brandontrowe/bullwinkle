@@ -1,9 +1,15 @@
 const settings = require('./config.js')
+const Matter = require('matter-js')
+
 module.exports = {
-    getRandomInt: function(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min)) + min;
+    getRandom: function(min, max, round) {
+        let rand
+        round = round || true
+        min = Math.ceil(min)
+        max = Math.floor(max)
+        rand = (Math.random() * (max - min)) + min
+        if(round) rand = Math.round(rand)
+        return rand
     },
     boundary: function(num, axis) {
         if (num < 0) return 0
